@@ -20,6 +20,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class Ihm extends JFrame implements ActionListener
 {
 	private JTree treeMenu;
+	private JMenuBar menubar;
+	private JMenu addMenu;
 	// TODO : 
 	// phase 1 : importer la liste des services dans un fichier
 	// phase 2 : récupérer la liste des services dans la DB
@@ -33,21 +35,48 @@ public class Ihm extends JFrame implements ActionListener
 		setDefaultCloseOperation(EXIT_ON_CLOSE);;
 		Container pane = getContentPane();
 		pane.setLayout(new BorderLayout());
-		
-		// tree menu on the left with scrolling
+		pane.add(buildMenuTree(), BorderLayout.WEST);	
+		buildMenuBar();
+	}
+	
+	private JScrollPane buildMenuTree()
+	{
+		// tree menu on the left
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Mes équipes");
+		
+		// TODO : replace with real values later on
 		for(String team : menu)
 		{
 			DefaultMutableTreeNode node = new DefaultMutableTreeNode(team);
 			root.add(node);
 		}
 		treeMenu = new JTree(root);
+		//scroll
 		JScrollPane scrollpane = new JScrollPane();
 		scrollpane.setViewportView(this.treeMenu);
-		pane.add(scrollpane, BorderLayout.WEST);	
 
+		return scrollpane;
 	}
 	
+	private void buildMenuBar()
+	{
+		//menubar
+		menubar = new JMenuBar();
+		setJMenuBar(menubar);
+		
+		addMenu = new JMenu("Ajouter");
+		
+		JMenuItem team = new JMenuItem("Ajouter un service");
+		team.setActionCommand("team");
+		team.addActionListener(this);
+		addMenu.add(team);
+		JMenuItem worker = new JMenuItem("Ajouter un salarié");
+		team.setActionCommand("worker");
+		team.addActionListener(this);
+		addMenu.add(worker);
+		menubar.add(addMenu);
+	
+	}
 	public void display() 
 	{
 		this.setVisible(true);
