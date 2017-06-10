@@ -22,14 +22,16 @@ public class Ihm extends JFrame implements ActionListener
 	private JTree treeMenu;
 	private JMenuBar menubar;
 	private JMenu addMenu;
+	private Database db;
+	
 	// TODO : 
-	// phase 1 : importer la liste des services dans un fichier
-	// phase 2 : récupérer la liste des services dans la DB
+	// récupérer la liste des services dans la DB
 	final static private String [] menu = {"Team IT", "Team RH", "Team Com", "Team Marketing"};
 	
 	public Ihm()
 	{
 		super("Neurolytic Platform");
+		this.db = new Database();
 		
 		setBounds(10, 20, 300, 300);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);;
@@ -43,14 +45,16 @@ public class Ihm extends JFrame implements ActionListener
 	{
 		// tree menu on the left
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Mes équipes");
-		
-		// TODO : replace with real values later on
-		for(String team : menu)
+		int rowsNumber = this.db.getServicesCount();
+		String[] services = this.db.getServices(rowsNumber);
+	
+		for(String team : services)
 		{
 			DefaultMutableTreeNode node = new DefaultMutableTreeNode(team);
 			root.add(node);
 		}
 		treeMenu = new JTree(root);
+		
 		//scroll
 		JScrollPane scrollpane = new JScrollPane();
 		scrollpane.setViewportView(this.treeMenu);
