@@ -21,12 +21,6 @@ public class Service
 	@Override
 	public String toString()
 	{
-		String s =  "nom service = " + this.getName() + " \n ------  \n Liste des employés : \n";
-		for(Employee emp : this.getTeam())
-		{
-			System.out.println(emp.getFirstname());
-			s += emp.getFirstname() + "\n";
-		}
-		return s;
+		return name;
 	}
 }

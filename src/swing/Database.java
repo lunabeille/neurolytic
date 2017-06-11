@@ -114,8 +114,7 @@ public class Database
 				i++;
 			}
 			rs.close();
-			stmt.close();
-			c.close();	
+			stmt.close();	
 		}
 	    catch ( Exception e ) 
 	    {
@@ -183,7 +182,7 @@ public class Database
 			System.exit(0);
 			rs.close();
 			stmt.close();
-			c.close();	
+				
 		}
 	    catch ( Exception e ) 
 	    {
@@ -222,7 +221,7 @@ public class Database
 			
 			rs.close();
 			stmt.close();
-			c.close();	
+				
 		}
 	    catch ( Exception e ) 
 	    {
@@ -280,7 +279,7 @@ public class Database
 			
 			rs.close();
 			stmt.close();
-			c.close();	
+				
 		}
 	    catch ( Exception e ) 
 	    {
