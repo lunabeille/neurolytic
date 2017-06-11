@@ -22,6 +22,7 @@ public class Database
 	 */
 	private static final int MAX_COLUMN_NUMBER = 10;
 	private static final String SELECT_ALL = "SELECT * FROM ";
+	private static final String SELECT_COUNT = "SELECT COUNT(*) FROM ";
 	
 	private Connection c;
 	private Statement stmt;
@@ -30,9 +31,12 @@ public class Database
 	public static void main( String args[] )
 	{
 		Database test = new Database();
-		test.getColumns("Service");
+		test.buildService("Ressources Humaines");
 	}
 	
+	/**
+	 * Initiates the connection and statement
+	 */
 	public Database()
 	{
 		this.c = null;
@@ -55,6 +59,103 @@ public class Database
 	}
 	
 	/**
+	 * Retrieve the service ID from a given name
+	 * @param serviceName String
+	 * @return int 
+	 */
+	public int getServiceId(String serviceName)
+	{
+		int id = 0;
+		try
+		{
+			String query = "SELECT id_service FROM Service WHERE name = '" + serviceName + "';";
+			ResultSet rs = this.stmt.executeQuery(query);
+			rs.next();
+			id = rs.getInt(1);
+			rs.close();
+			stmt.close();
+		}
+	    catch ( Exception e ) 
+	    {
+	    	System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	    	System.exit(0);
+	    }
+		System.out.println(id);
+		return id;
+	}
+	
+	/**
+	 * Build a Service from a given name and fills it with the employees'list
+	 * @param Servicename String
+	 * @return Service object 
+	 */ 
+	public Service buildService(String Servicename)
+	{
+		Service service = new Service();
+		int serviceId = this.getServiceId(Servicename);
+		int employeeNumber = this.countEmployee(serviceId);
+		
+		Employee[] list = new Employee[employeeNumber];
+		
+		
+		try
+		{
+			ResultSet rs = this.stmt.executeQuery(SELECT_ALL + "Employee WHERE id_service = " + serviceId +  ";" );
+			int i = 0;
+			while(rs.next()) 
+			{	
+				int id = rs.getInt(1);
+				String name = rs.getString(2);
+				String firstname = rs.getString(3);
+				String sexe = rs.getString(4);
+				String bdate = rs.getString(5);
+				Employee e = new Employee(id, name, firstname,sexe, bdate);
+				list[i] = e;	
+				i++;
+			}
+			rs.close();
+			stmt.close();
+			c.close();	
+		}
+	    catch ( Exception e ) 
+	    {
+	    	System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	    	System.exit(0);
+	    }
+		service.setTeam(list);
+		service.setName(Servicename);
+		System.out.println(service);
+		return service;
+	}
+	
+	/**
+	 * Retrieves the number of employees in a given service
+	 * @param serviceName String
+	 * @return int 
+	 */
+	public int countEmployee(int serviceId)
+	{
+		int nbEmployee = 0;		
+		try
+		{
+			String query  = SELECT_COUNT + "Employee WHERE id_service = "  + serviceId + ";"; 
+			ResultSet rs = this.stmt.executeQuery(query);
+					
+			rs.next();
+			nbEmployee = rs.getInt(1);
+			rs.close();
+			stmt.close();
+			System.out.println(nbEmployee);	
+		}
+	    catch ( Exception e ) 
+	    {
+	    	System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	    	System.exit(0);
+	    }	
+		return nbEmployee;
+	}
+	
+	/**
 	 * 
 	 * @param tableName : String : the name of the table to retrieve content
 	 * @return HashMap :  column_name => value
@@ -62,7 +163,6 @@ public class Database
 	 */
 	public LinkedHashMap<String, String> getTableByName(String tableName)
 	{
-		
 		LinkedHashMap<String, String> results = new LinkedHashMap<String, String>();
 		try
 		{
@@ -94,6 +194,11 @@ public class Database
 		return results;
 	}
 	
+	/**
+	 * Retreives the name of the columns of a table
+	 * @param tableName
+	 * @return
+	 */
 	public String[] getColumns(String tableName)
 	{	
 		String[] results = new String[MAX_COLUMN_NUMBER];
@@ -127,12 +232,17 @@ public class Database
 		System.out.println("Operation done successfully");
 		return results;
 	}
+	
+	/**
+	 * Retreives the number of services in the db in order to instantiate the treeMenu
+	 * @return
+	 */
 	public int getServicesCount()
 	{
 		int rowsNumber = 0;
 		try
 		{
-			ResultSet rs = this.stmt.executeQuery("SELECT COUNT(*) FROM Service;");
+			ResultSet rs = this.stmt.executeQuery(SELECT_COUNT +  "Service;");
 			rs.next();
 			rowsNumber = rs.getInt(1);
 			rs.close();
@@ -146,6 +256,12 @@ public class Database
 
 		return rowsNumber;
 	}
+	
+	/**
+	 * Retrieves the names of the different services in the db
+	 * @param rows int
+	 * @return array of names
+	 */
 	public String[] getServices(int rows)
 	{
 		String[] results = new String[0];

@@ -2,11 +2,19 @@ package swing;
 
 public class Employee 
 {
+	int id;
 	String name;
 	String firstname;
-	char sexe;
+	String sexe;
 	String birthdate;
 	
+	public Employee(int id,String name, String firstname, String sexe, String birthdate) {
+		this.id = id;
+		this.name = name;
+		this.firstname = firstname;
+		this.sexe = sexe;
+		this.birthdate = birthdate;
+	}
 	public String getName() {
 		return name;
 	}
@@ -19,10 +27,10 @@ public class Employee
 	public void setFirstname(String firstname) {
 		this.firstname = firstname;
 	}
-	public char getSexe() {
+	public String getSexe() {
 		return sexe;
 	}
-	public void setSexe(char sexe) {
+	public void setSexe(String sexe) {
 		this.sexe = sexe;
 	}
 	public String getBirthdate() {
